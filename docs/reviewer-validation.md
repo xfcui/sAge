@@ -1,5 +1,27 @@
 # Execution validation record
 
+## xfcui submission branch check on 2026-09-18
+
+The public `xfcui/sAge` branch `submission-update` at commit `3d9f35b` was
+cloned into a new checkout. Git LFS downloaded `data/Heart.hdf5` from the
+teacher-owned repository (284,573,664 bytes); its SHA-256 was
+`5a72f755adb1ed9eba62d85c7ab2d2f3502150be01d0892f4d7dd335b347e27f`.
+
+A new Python 3.12.7 virtual environment was created and installed from the
+branch's `requirements.txt`. `pip check` passed. `check_environment.py` passed
+on JAX CPU, including the `(2, 6)` model forward pass and early-stopping API.
+The README preparation command produced 3,104 cells, a 2,484/620 initial
+train/test split and five CV folds. The documented fold 0 dry run passed.
+The one-epoch Quick run then completed training and holdout evaluation in
+30.6 seconds on the validation machine (`#Final Test: Loss = 1.6727,
+Acc = 31.33%`). It wrote the documented `command.json` and `train.log`.
+
+This establishes that the code, dependencies and Git LFS Heart object can be
+obtained from the teacher-owned update branch and that the Quick run completes.
+It is an execution check, not a reproduction of manuscript scores. The full
+five folds, long pruning run, GPU/Linux path and figure analyses were not
+repeated in this branch check; their earlier validation scopes remain below.
+
 ## Quick run check on 2026-09-17
 
 A fresh checkout of `qianminbio/sAge` at `2d69f63`, with the local Quick run

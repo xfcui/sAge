@@ -191,9 +191,11 @@ For this implementation:
   then applies `log2(x * 1023 + 1)`. Use the input preprocessing intended for
   the experiment; do not apply this transform twice.
 
-The current Heart file contains only class IDs 1 and 4, although the model has
-six output classes. The biological class names, covariate meaning, gene order,
-data accession, and redistribution rights still need author documentation.
+The current Heart file contains only class IDs 1 and 4 (3 and 24 months),
+although the model has six output classes. Its first covariate is method ID 1
+(FACS); its unused second covariate is tissue ID 6 (Heart). These mappings come
+from the original [dataset notes](data/readme.txt). Gene order, data accession,
+preprocessing provenance, and redistribution rights still need documentation.
 
 Create a holdout test set and five cross-validation folds:
 

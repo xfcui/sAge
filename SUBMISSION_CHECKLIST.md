@@ -5,8 +5,8 @@
 - [ ] Confirm these model, feature-selection, and evaluation settings match the manuscript.
 - [x] Confirm model name: sAge.
 - [ ] Add manuscript title, authors, and citation metadata.
-- [ ] Document all tissues/datasets, data accessions, preprocessing, feature order,
-      class mapping, and covariate meaning.
+- [x] Document the original age, method and tissue ID mappings.
+- [ ] Document all datasets, accessions, preprocessing and feature order.
 - [ ] Confirm holdout and CV splitting units and whether donor separation is required.
 - [ ] Resolve or explicitly justify the evaluation and random-seed limitations in docs/reproducibility.md.
 - [ ] Supply commands/configurations linking each reported result to its dataset and seed.
@@ -22,7 +22,8 @@
 - [ ] Document hardware and expected runtime based on actual runs.
 - [ ] Provide data and any released weights separately with checksums.
 - [x] Include the complete Heart reviewer example via Git LFS.
-- [ ] Confirm Heart data provenance, gene order, label mappings, and public redistribution rights.
+- [x] Confirm Heart label mappings from the original repository notes.
+- [ ] Confirm Heart data provenance, gene order and public redistribution rights.
 - [ ] Inventory and release the actual training/evaluation code for every central benchmark result.
 - [x] Supply the CellPhoneDB helper and figure input-path inventory.
 - [ ] Add dataset accessions, checksums, and access routes for the missing figure inputs.
