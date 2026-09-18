@@ -1,3 +1,4 @@
+# Original repository exclusions
 # Python
 __pycache__/
 *.py[cod]
@@ -54,3 +55,32 @@ stat.out
 # Local archives
 *.tgz
 *.tar.gz
+
+# Submission workflow exclusions and released-data exceptions
+# Local datasets and generated experiments
+*.h5
+*.hdf5
+!data/Heart.hdf5
+*.h5ad
+outputs/
+prepared_data/
+figure_inputs/
+figure_outputs/
+*.log
+
+# Python and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
