@@ -1,8 +1,5 @@
 # Heart example data
 
-See [the data dictionary and release information](../docs/release-information.md)
-for verified label counts and the biological definitions still to be supplied.
-
 The original repository's [dataset notes](readme.txt) document the source
 encoding: age IDs 0–5 denote 1, 3, 18, 21, 24 and 30 months; method IDs
 0/1 denote droplet/FACS; tissue ID 6 denotes Heart. Under that encoding,

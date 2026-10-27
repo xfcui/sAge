@@ -11,9 +11,9 @@ from single-cell expression data. This repository provides data splitting,
 training, cross-validation, and feature-mask export.
 
 Use `model/` and `run_cross_validation.py` for the workflow below. The
-original `src/` implementation, data conversion script and dataset notes
-remain available; see [repository integration notes](docs/repository-integration.md)
-for their differences and the original documentation.
+original `src/` implementation is retained for provenance but is not used by
+the documented workflow and should not be assumed to be numerically equivalent
+to the current `model/` implementation.
 
 **Workflow:** install the environment → prepare an HDF5 dataset → create the
 train/test and cross-validation splits → train → inspect logs and selected features.
