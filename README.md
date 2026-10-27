@@ -36,33 +36,6 @@ python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outpu
 python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-quick-check --folds 0 -- --max_epochs 1
 ```
 
-### Expected runtime
-
-On a standard CPU desktop, after the environment and Heart example have been
-downloaded, the three Quick run commands typically complete in approximately
-**1–2 minutes**. In a validated Windows x86_64 / JAX CPU run, the one-epoch
-training and final holdout evaluation completed in **30.6 seconds**. Runtime
-varies with CPU, storage performance, and available memory. Environment
-installation and the Git LFS download are not included in this estimate.
-
-If using the Conda option on a machine with user-installed Python packages,
-replace `python` with `python -s` in these three commands as described in the
-installation section. Leave several gigabytes free for the generated splits
-and outputs; the Heart file itself is about 285 MB.
-
-The data-preparation command should report **3,104 cells**, a **2,484/620**
-initial train/test split, and **five CV folds**. The dry run prints the resolved
-training command and checks file locations. The training runner writes its
-output to `outputs/Heart-quick-check/fold_0/train.log`, including the final
-holdout evaluation. The runner prints the log location at startup and a
-completion message when training finishes. A successful run exits without an
-error and its log contains `#Final Test: Loss = ..., Acc = ...`. Use a **new**
-output directory for each repeat. For pruning and complete experimental
-settings, continue with [the training section](#4-train-the-model). The
-[execution record](docs/reviewer-validation.md) states exactly what has been
-validated. Figure notebooks require separate inputs described in
-[the figure workflow](figure/WORKFLOW.md).
-
 ## 1. Download the code
 
 Install Git and Git LFS, then run:
@@ -148,20 +121,6 @@ typically takes approximately **5–10 minutes**. The exact time depends mainly
 on network speed and whether Conda or pip packages are already cached. This
 estimate does not include cloning the repository or downloading the Heart
 example with Git LFS.
-
-PyTorch supplies the data loader; JAX performs model computation.
-These are installation-guide versions, **not a claim about the software used
-to produce the manuscript results**. The original environment export is
-preserved in [docs/environment.original.yml](docs/environment.original.yml).
-
-Verified from a fresh public GitHub clone on Windows x86_64 / JAX CPU: Git LFS
-Heart download and checksum, independent Conda and virtual-environment installs,
-five-fold data preparation, one-fold training with final test evaluation, and
-an eight-epoch run that actually pruned features and saved a restorable checkpoint.
-See [the execution validation record](docs/reviewer-validation.md) for exact scope and
-results. An earlier Windows CPU package snapshot is available at
-[docs/requirements.windows-cpu.lock.txt](docs/requirements.windows-cpu.lock.txt).
-GPU execution has not been independently tested.
 
 ### Optional: NVIDIA GPU on Linux
 
