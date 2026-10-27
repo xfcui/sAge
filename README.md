@@ -36,6 +36,15 @@ python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outpu
 python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-quick-check --folds 0 -- --max_epochs 1
 ```
 
+### Expected runtime
+
+On a standard CPU desktop, after the environment and Heart example have been
+downloaded, the three Quick run commands typically complete in approximately
+**1–2 minutes**. In a validated Windows x86_64 / JAX CPU run, the one-epoch
+training and final holdout evaluation completed in **30.6 seconds**. Runtime
+varies with CPU, storage performance, and available memory. Environment
+installation and the Git LFS download are not included in this estimate.
+
 If using the Conda option on a machine with user-installed Python packages,
 replace `python` with `python -s` in these three commands as described in the
 installation section. Leave several gigabytes free for the generated splits
@@ -130,6 +139,15 @@ The core versions are:
 | NumPy / SciPy | 1.26.4 / 1.12.0 |
 | PyTorch | 2.6.0 |
 | h5py / scikit-learn | 3.11.0 / 1.5.1 |
+
+### Typical installation time
+
+On a standard desktop computer with a stable internet connection, creating a
+fresh Conda or Python virtual environment and running `check_environment.py`
+typically takes approximately **5–10 minutes**. The exact time depends mainly
+on network speed and whether Conda or pip packages are already cached. This
+estimate does not include cloning the repository or downloading the Heart
+example with Git LFS.
 
 PyTorch supplies the data loader; JAX performs model computation.
 These are installation-guide versions, **not a claim about the software used
