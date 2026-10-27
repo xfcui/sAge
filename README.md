@@ -4,8 +4,7 @@
 [Installation](#2-install-the-environment) ·
 [Heart example](data/README.md) · [Training](#4-train-the-model) ·
 [Figure workflow](figure/WORKFLOW.md) ·
-[Validation record](docs/reviewer-validation.md) ·
-[Release information](docs/release-information.md)
+[Validation record](docs/reviewer-validation.md)
 
 **sAge** is a JAX/Flax model for classification and iterative feature selection
 from single-cell expression data. This repository provides data splitting,
@@ -35,6 +34,29 @@ python model/prepare_dataset_for_cv.py --data_path data/Heart.hdf5 --output_dir 
 python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-quick-check --folds 0 --dry-run
 python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-quick-check --folds 0 -- --max_epochs 1
 ```
+
+### Scope, expected output and runtime
+
+The Quick run is an execution test, not a complete experiment. It verifies
+data preparation, model construction, one training epoch and holdout
+evaluation. It does **not** complete iterative pruning, determine the final
+aging-gene list, run all five folds to early stopping or reproduce manuscript
+scores.
+
+The preparation command should report **3,104 cells**, a **2,484/620** initial
+train/test split and **five CV folds**. A successful training check writes
+`outputs/Heart-quick-check/fold_0/command.json` and `train.log`; the log ends
+with `#Final Test: Loss = ..., Acc = ...%`. These values are execution
+diagnostics.
+
+After installation and the Heart download, the three commands typically take
+approximately **1–2 minutes** on a standard CPU desktop. One validated Windows
+x86_64 / JAX CPU run completed the one-epoch training and holdout evaluation
+in **30.6 seconds**. Runtime varies with CPU, storage and available memory.
+
+When using the Conda option, replace `python` with `python -s` in these commands.
+Use a new output directory for every repeat. Leave several gigabytes free for
+the generated splits and outputs; the Heart file itself is about 285 MB.
 
 ## 1. Download the code
 
@@ -122,6 +144,23 @@ on network speed and whether Conda or pip packages are already cached. This
 estimate does not include cloning the repository or downloading the Heart
 example with Git LFS.
 
+### Tested system and hardware scope
+
+The core model and Quick run were tested on **Windows 11 64-bit
+(10.0.22631)** with Python 3.12 and the JAX CPU backend. No GPU or other
+non-standard hardware is required for installation or the Quick run. Several
+gigabytes of free disk space are recommended. The pinned root
+`environment.yml` and `requirements.txt` cover the core sAge model and Quick
+run. Dependencies under `figure/` are optional and are not required for this
+software demo; their separate setup is documented in
+[figure/README.md](figure/README.md).
+
+PyTorch supplies the data loader; JAX performs model computation. A fresh
+public-clone validation covered the Git LFS Heart download, independent Conda
+and virtual-environment installation, five-fold data preparation, one-fold
+training/evaluation, pruning and checkpoint restoration. See the
+[execution validation record](docs/reviewer-validation.md) for the exact scope.
+
 ### Optional: NVIDIA GPU on Linux
 
 First install the CPU environment above. On Linux with a working NVIDIA
@@ -171,8 +210,9 @@ For this implementation:
 The current Heart file contains only class IDs 1 and 4 (3 and 24 months),
 although the model has six output classes. Its first covariate is method ID 1
 (FACS); its unused second covariate is tissue ID 6 (Heart). These mappings come
-from the original [dataset notes](data/readme.txt). Gene order, data accession,
-preprocessing provenance, and redistribution rights still need documentation.
+from the original [dataset notes](data/readme.txt). The released HDF5 does not
+embed gene identifiers or provenance metadata; the Quick run uses matrix
+positions, and compatible user inputs must preserve the same feature order.
 
 Create a holdout test set and five cross-validation folds:
 
@@ -223,17 +263,19 @@ only start after validation improvement and later training epochs; a one-epoch
 run does not demonstrate pruning. See the full run below for the original
 training settings, and do not interpret a short run's scores as paper results.
 
-To exercise the pruning branch without starting all five folds, use a new
-output directory for a longer fold 0 run:
+### Optional short pruning check — not a complete training run
+
+To exercise the pruning and checkpoint branches without starting a complete
+experiment, use a new output directory for an eight-epoch fold 0 run:
 
 ```bash
 python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-pruning-check --folds 0 -- --max_epochs 8
 ```
 
 Pruning depends on validation improvements, so the exact epoch and retained
-feature count can vary. The [execution validation record](docs/reviewer-validation.md)
-shows both this short check and a complete fold 0 run that reached single-digit
-features. Use the full run below to observe the training stop condition.
+feature count can vary. This command does not train fold 0 to early stopping
+and does not produce the final aging-gene list. Use the full run below for a
+complete experiment.
 
 ### Run all five folds
 
@@ -241,7 +283,7 @@ To check all five folds before a full experiment, run one epoch per fold
 in a new output directory:
 
 ```bash
-python -s run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-five-fold-check -- --seed 20201212 --max_epochs 1
+python -s run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-five-fold-check --folds 0 1 2 3 4 -- --seed 20201212 --max_epochs 1
 ```
 
 This checks fold orchestration and evaluation, not feature pruning or
@@ -249,13 +291,20 @@ checkpoint creation. `python -s check_environment.py` also tests checkpoint
 saving and restoration. For the full experiment, use:
 
 ```bash
-python -s run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart -- --seed 20201212 --max_epochs 9999
+python -s run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart --folds 0 1 2 3 4 -- --seed 20201212 --max_epochs 9999
 ```
 
 Folds run sequentially. Training output is written to each fold's
 `train.log` with unbuffered output so you can follow progress while it runs.
 The runner stops on an error and rejects nonempty fold output directories;
 choose a new output directory when rerunning an experiment.
+
+The **1–2 minute** estimate applies only to the Quick run. Complete training
+continues until early stopping or the maximum epoch count and takes
+substantially longer. A CPU fold can require tens of minutes or more, and the
+five sequential folds can require several hours. An NVIDIA GPU is recommended
+for full training. No complete five-fold runtime is claimed until all five
+folds have been timed on the same system.
 
 Arguments **before** `--` configure the runner. Arguments **after** `--`
 are passed to `model/train-tissue.py`.
@@ -301,8 +350,9 @@ outputs are excluded from Git; the complete Heart example file is included.
 
 ## 6. Figure analysis
 
-The `figure/` directory contains the manuscript analysis notebooks and R scripts.
-These require additional dependencies and external input/results files. Start
+The `figure/` directory contains optional manuscript analysis notebooks and R
+scripts. They are outside the core software demo and require additional
+dependencies and external input/results files. Start
 with [figure/README.md](figure/README.md) for the organized script index,
 installation, input inventory, and validation scope. The model environment
 alone does not install all
@@ -327,14 +377,10 @@ figure dependencies.
 ## Reproducibility and citation
 
 See [reproducibility notes](docs/reproducibility.md) for validation status,
-data-splitting behavior, random seeds, checkpoint selection, and metric
-aggregation. The manuscript title, author list, citation and data accession
-are pending. The original [MIT license](LICENSE) is retained. See
-[the submission checklist](SUBMISSION_CHECKLIST.md)
-for the remaining release items.
+data-splitting behavior, random seeds, checkpoint selection and metric
+aggregation. The software is distributed under the [MIT license](LICENSE).
 
-The available MLP benchmark notebooks are in
+The available optional MLP benchmark notebooks are in
 [Figure 2](figure/figure2/), with required inputs listed in
-[the figure input inventory](figure/INPUTS.md). The manuscript's full benchmark
-model list and the scripts/settings behind every reported comparison still
-need author review before claiming that all benchmark results are reproducible.
+[the figure input inventory](figure/INPUTS.md). These figure analyses are not
+part of the Quick run or its expected runtime.

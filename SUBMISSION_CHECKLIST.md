@@ -1,5 +1,10 @@
 # Submission release checklist
 
+> **Internal development audit.** This file is broader than the Nature
+> Research Code and Software Submission Checklist. Unchecked items below are
+> provenance and extended-reproduction tasks; they do not imply that optional
+> reproduction instructions are required for the core sAge Quick run.
+
 ## Scientific provenance
 
 - [ ] Confirm these model, feature-selection, and evaluation settings match the manuscript.
