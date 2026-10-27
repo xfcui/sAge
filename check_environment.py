@@ -5,6 +5,7 @@ from importlib.metadata import version
 from pathlib import Path
 import runpy
 import sys
+import tempfile
 
 
 def main():
@@ -47,7 +48,15 @@ def main():
     state, improved = update(state, 2.0)
     if improved:
         raise RuntimeError('Early-stopping non-improvement check failed.')
-    print('PASS: imports, model forward pass, and early-stopping API.')
+    from flax.training import checkpoints
+    with tempfile.TemporaryDirectory(prefix='sage-checkpoint-') as directory:
+        checkpoint = {'params': params, 'feature': np.ones(NUM_FEATURES, dtype=bool)}
+        checkpoints.save_checkpoint(directory, checkpoint, step=0)
+        restored = checkpoints.restore_checkpoint(directory, target=checkpoint)
+        for expected, actual in zip(jax.tree_util.tree_leaves(checkpoint),
+                                    jax.tree_util.tree_leaves(restored)):
+            np.testing.assert_array_equal(np.asarray(expected), np.asarray(actual))
+    print('PASS: imports, model forward pass, early-stopping API, and checkpoint save/restore.')
 
 
 if __name__ == '__main__':

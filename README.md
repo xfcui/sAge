@@ -260,8 +260,19 @@ features. Use the full run below to observe the training stop condition.
 
 ### Run all five folds
 
+To check all five folds before a full experiment, run one epoch per fold
+in a new output directory:
+
 ```bash
-python run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart -- --seed 20201212 --max_epochs 9999
+python -s run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart-five-fold-check -- --seed 20201212 --max_epochs 1
+```
+
+This checks fold orchestration and evaluation, not feature pruning or
+checkpoint creation. `python -s check_environment.py` also tests checkpoint
+saving and restoration. For the full experiment, use:
+
+```bash
+python -s run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart -- --seed 20201212 --max_epochs 9999
 ```
 
 Folds run sequentially. Training output is written to each fold's
@@ -324,6 +335,7 @@ outputs are excluded from Git; the complete Heart example file is included.
 | Missing fold file | Run data preparation first and pass its output directory as `--data-dir`. |
 | Output directory is not empty | Choose a new `--output-dir`; existing experiments are retained. |
 | Training fails after the runner prints a command | Inspect that fold's `train.log` for the underlying error. |
+| `ValueError: cannot convert float NaN to integer` inside Orbax's `_log_io_per_sec_metric` | Update to the checkpoint compatibility fix and rerun `python -s check_environment.py`. Orbax 0.6.4 can fail while formatting an unmeasurable save-speed statistic on Windows; this traceback does not indicate a NaN model loss. Retry in a new output directory, since failed runs can leave partial checkpoints. |
 
 ## 6. Figure analysis
 

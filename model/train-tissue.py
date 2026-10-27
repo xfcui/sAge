@@ -20,6 +20,9 @@ from flax.training import train_state, checkpoints, early_stopping
 # Import FoldDataset for loading pre-split data
 from data import NUM_FEATURES, FoldDataset, collate_fn
 from model import MaskedPruningModel
+from orbax_compat import install_checkpoint_compat
+
+install_checkpoint_compat()
 
 def mask_fn(param):
     def worker(n, p):

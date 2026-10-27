@@ -1,5 +1,31 @@
 # Execution validation record
 
+## Windows checkpoint fix on 2026-10-27
+
+The local `xfcui/sAge` checkout at `9b378ad` failed in fold 0 after epoch 10.
+The traceback ended in Orbax 0.6.4's `_log_io_per_sec_metric`, where a zero
+wall-clock interval produced NaN and `humanize.naturalsize` raised
+`ValueError: cannot convert float NaN to integer`. This was a checkpoint
+diagnostic formatting failure, not evidence of NaN training loss.
+
+The compatibility fix replaces only that version's throughput logger and
+omits unmeasurable rates. It leaves serialization and the checkpoint format
+unchanged. A controlled zero-duration test reproduced the original exception
+and passed after the fix. Three regression tests cover invalid durations,
+valid throughput, and installation of the compatibility handler.
+
+In the user's existing Windows CPU Conda environment (Python 3.12.16,
+Orbax 0.6.4), the expanded environment check saved and restored model
+parameters and a feature mask. With the fix, complete Heart fold 0 finished
+12 epochs, saved checkpoints through 16,851 retained features, and completed
+holdout evaluation (diagnostic loss 0.1618; accuracy 96.15%).
+
+A separate unmodified checkout at the same commit completed all five folds
+for one epoch each using the earlier pinned environment and prepared Heart
+splits. This verifies the five-fold runner path, not full five-fold pruning.
+Neither check establishes manuscript scores or full five-fold convergence.
+Failed output directories were retained; the fixed run used a new directory.
+
 ## xfcui submission branch check on 2026-09-18
 
 The public `xfcui/sAge` branch `submission-update` at commit `3d9f35b` was
