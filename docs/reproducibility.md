@@ -41,8 +41,9 @@ five-fold preparation, fold 0 training through natural early stopping, actual
 iterative pruning to one retained feature, and checkpoint restore. Not verified:
 a complete five-fold training run,
 Linux/GPU execution, or manuscript result equivalence.
-A subsequent [figure audit](../figure/VALIDATION.md) validated 17 organized
-notebooks and parsed four R scripts; it executed the complete plasma notebook
+A subsequent [analysis audit](../figure/VALIDATION.md) validated 16 figure
+notebooks and the model gene-selection notebook, and parsed four R scripts;
+it executed the complete plasma notebook
 and CellPhoneDB helper with local cached inputs. The other figure analyses
 have not been executed against their manuscript datasets.
 The optional figure requirements are not a validated version lock.

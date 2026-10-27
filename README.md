@@ -354,6 +354,7 @@ figure dependencies.
 | `model/data.py` | Dataset loading and splitting |
 | `model/prepare_dataset_for_cv.py` | Prepare holdout and CV files |
 | `model/train-tissue.py` | Train and evaluate one fold |
+| `model/elbow-gene-choose.ipynb` | Select the final feature count and aging-gene list from the predefined fold 4 results |
 | `run_cross_validation.py` | Run multiple folds and save logs |
 | `check_environment.py` | Check imports, devices, model execution, and early-stopping compatibility |
 | `environment.yml`, `requirements.txt` | Installation environment |

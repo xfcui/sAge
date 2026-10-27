@@ -30,7 +30,7 @@ letters must be matched to the submitted manuscript by the authors.
 | Group | Start with | Inputs required before downstream plotting | Outputs / next step |
 | --- | --- | --- | --- |
 | Preprocessing | [Human preparation](data-%20preprocess.ipynb) | Original human h5ad files and metadata | Derived HDF5 and gene lists; verify feature order |
-| Feature selection | [Elbow analysis](elbow-gene-choose.ipynb) | Training feature masks, result folders and gene header | Feature-count analysis / selected gene sets |
+| Feature selection | [Elbow analysis](../model/elbow-gene-choose.ipynb) | Training feature masks, result folders and gene header | Feature-count analysis / selected gene sets |
 | [Figure 2](figure2/) | Mouse/human benchmark notebooks | Dataset splits, selected genes and comparator outputs | MLP result tables used by heatmap and boxplot notebooks |
 | [Figure 3](figure3/) | Nonlinear trajectory notebooks | Tissue expression, ordered genes and selected-gene lists | Trajectory results; cluster/GO analysis also needs assignment tables |
 | [Figure 4](figure4/) | Gene-ratio and overlap analyses | Mouse/human gene sets and enrichment summaries | Ratios, overlap plots and GO comparisons |

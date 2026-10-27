@@ -2,9 +2,11 @@
 
 ## Notebook launch and renamed files
 
-After the Figure 5/6 file renames, documentation and notebook headings were
-updated to the published names. All 17 notebook initialization cells were
-executed in separate Python processes with each notebook's own directory as
+After the Figure 5/6 file renames and the move of final gene selection to
+`model/elbow-gene-choose.ipynb`, documentation and notebook headings were
+updated to the published names. The 16 figure notebooks and the model gene-selection
+notebook had their initialization cells executed in separate Python processes
+with each notebook's own directory as
 the working directory. The repository lookup and `figure.paths` imports
 succeeded in every case. Notebook-format and Python-syntax checks passed,
 and local Markdown file links were checked. This verifies initialization;
@@ -14,7 +16,7 @@ it is not a rerun of the downstream scientific analyses.
 
 On 2026-09-15, the optional `requirements-figures.txt` package set was
 installed in a fresh Python 3.12 virtual environment that already held the
-pinned model requirements. `python -m pip check` passed. All 17 organized
+pinned model requirements. `python -m pip check` passed. All 17 repository
 notebooks passed notebook-format validation, and their ordinary Python code
 cells parsed successfully. All four R analysis scripts passed `parse()` with
 R 4.3.3. This is a source and installation check, not figure reproduction.

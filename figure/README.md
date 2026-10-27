@@ -4,8 +4,10 @@ See [the step-by-step workflow](WORKFLOW.md) for analysis order, required
 upstream results, expected output types and the current execution scope.
 
 The notebooks and R scripts are organized by analysis group in `figure2/`
-through `figure6/`. `data- preprocess.ipynb` and `elbow-gene-choose.ipynb`
-contain upstream preparation and feature-count analysis. The directory labels
+through `figure6/`. `data- preprocess.ipynb` contains upstream preparation;
+final feature-count and gene-list selection is part of the model workflow in
+[`model/elbow-gene-choose.ipynb`](../model/elbow-gene-choose.ipynb). The
+directory labels
 reflect the author's current organization; the final mapping to manuscript
 panel numbers still needs author confirmation. Model training is documented in
 the [main README](../README.md).
@@ -82,7 +84,6 @@ the original manuscript R/Bioconductor versions are not yet known.
 | Location | Analysis |
 | --- | --- |
 | `data- preprocess.ipynb` | Human dataset preprocessing |
-| `elbow-gene-choose.ipynb` | Feature-count selection |
 | `figure2/` | Mouse/human MLP benchmarks, heatmaps and boxplots |
 | `figure3/` | Gene-expression trajectories and GO clusters |
 | `figure4/` | Tissue gene ratios, gene-set overlap and GO analyses |

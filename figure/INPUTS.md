@@ -26,7 +26,7 @@ Some listed paths are generated intermediates rather than primary datasets. Foll
 - `2-8.3-shanda/1-data/GSE201333_RAW/GSM6058681_TabulaSapiens_no_clones.h5ad`
 - `2-8.3-shanda/1-data/GSE201333_RAW/gene_names_no_clones.txt`
 
-### `figure/elbow-gene-choose.ipynb`
+### `model/elbow-gene-choose.ipynb`
 
 - `1-TMS-remove/2-restart`
 - `2-8.3-shanda/1-feature/1-5x`
