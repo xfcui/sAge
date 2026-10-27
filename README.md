@@ -322,21 +322,6 @@ outputs/Heart/fold_0/
 The remaining folds have the same structure. Prepared splits and generated
 outputs are excluded from Git; the complete Heart example file is included.
 
-## Troubleshooting
-
-| Problem | What to check |
-| --- | --- |
-| `ModuleNotFoundError` | Activate the selected environment; install with `python -m pip install -r requirements.txt`. |
-| Conda mirror returns HTTP 404 | Use the official channel URL in `environment.yml` and retry; Option B avoids Conda channels. |
-| `pip check` lists unrelated user packages | In Conda, use `python -s -m pip check` and `python -s` for later commands. |
-| Dependency/version error | Create a fresh environment using the pinned requirements; avoid mixing with the historical export. |
-| JAX lists only a CPU | Check the operating system, NVIDIA driver, and CUDA backend; run `check_environment.py --require-gpu`. |
-| Feature-count assertion | The input must have 22,919 features in the expected order. |
-| Missing fold file | Run data preparation first and pass its output directory as `--data-dir`. |
-| Output directory is not empty | Choose a new `--output-dir`; existing experiments are retained. |
-| Training fails after the runner prints a command | Inspect that fold's `train.log` for the underlying error. |
-| `ValueError: cannot convert float NaN to integer` inside Orbax's `_log_io_per_sec_metric` | Update to the checkpoint compatibility fix and rerun `python -s check_environment.py`. Orbax 0.6.4 can fail while formatting an unmeasurable save-speed statistic on Windows; this traceback does not indicate a NaN model loss. Retry in a new output directory, since failed runs can leave partial checkpoints. |
-
 ## 6. Figure analysis
 
 The `figure/` directory contains the manuscript analysis notebooks and R scripts.
