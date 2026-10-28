@@ -1,6 +1,3 @@
-# Install after the core model environment; only needed for the elbow notebook.
+# Install after the core model environment for command-line gene selection.
 -c requirements.txt
 matplotlib>=3.9,<4
-pandas>=2.2,<3
-jupyterlab>=4,<5
-ipykernel>=6,<7

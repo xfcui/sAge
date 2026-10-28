@@ -4,6 +4,7 @@ Used by elbow-gene-choose.ipynb. Regression uses the stored expression values,
 as in the original notebook; it does not apply the classifier's normalization.
 """
 
+import argparse
 import csv
 import hashlib
 from importlib.metadata import version
@@ -261,3 +262,59 @@ def run_selection(data_dir, run_dir, header_file, fold, output_dir, *,
     figure.savefig(output_dir / 'elbow_metrics.pdf')
     print(f'Selected {len(indices)} genes from {fold}. Results: {output_dir}')
     return rows, manifest, figure
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description='Export final aging genes from one completed pruning fold.')
+    parser.add_argument('--data-dir', type=Path, required=True,
+                        help='Prepared dataset directory from the README.')
+    parser.add_argument('--run-dir', type=Path, required=True,
+                        help='Training output directory containing fold_N directories.')
+    parser.add_argument('--fold', type=int, default=0, help='One completed fold index (default: 0).')
+    parser.add_argument('--header', type=Path,
+                        default=Path(__file__).resolve().parents[1] / 'data' / 'header.txt')
+    parser.add_argument('--output-dir', type=Path,
+                        help='New destination; default: RUN_DIR/fold_N/gene_selection.')
+    parser.add_argument('--selection-split', choices=['initial_test', 'validation'],
+                        default='initial_test', help='Dataset used to select the elbow.')
+    parser.add_argument('--max-features', default='1011',
+                        help='Largest candidate feature count, or "all" (default: 1011).')
+    parser.add_argument('--age-mapping', type=Path,
+                        help='Optional JSON object mapping integer class IDs to ages in months.')
+    args = parser.parse_args(argv)
+    if args.fold < 0:
+        parser.error('--fold must be nonnegative.')
+    try:
+        max_features = None if args.max_features.lower() == 'all' else int(args.max_features)
+        if max_features is not None and max_features < 1:
+            raise ValueError
+    except ValueError:
+        parser.error('--max-features must be a positive integer or "all".')
+    mapping = None
+    if args.age_mapping:
+        try:
+            raw = json.loads(args.age_mapping.read_text(encoding='utf-8'))
+            mapping = {int(key): float(value) for key, value in raw.items()}
+        except (OSError, ValueError, TypeError, AttributeError) as error:
+            parser.error(f'Cannot read --age-mapping: {error}')
+    # Save plots on servers and desktops without opening windows or Jupyter.
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+
+    fold = f'fold_{args.fold}'
+    output = args.output_dir or args.run_dir / fold / 'gene_selection'
+    try:
+        _, _, figure = run_selection(
+            args.data_dir, args.run_dir, args.header, fold, output,
+            selection_split=args.selection_split, max_features=max_features,
+            age_mapping=mapping)
+    except (OSError, ValueError, KeyError) as error:
+        parser.exit(1, f'Gene selection failed: {error}\n')
+    plt.close(figure)
+    print(f'Final aging-gene list: {(output / "final_aging_genes.txt").resolve()}')
+
+
+if __name__ == '__main__':
+    main()

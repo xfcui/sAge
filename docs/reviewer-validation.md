@@ -2,6 +2,12 @@
 
 ## README-to-gene-selection check on 2026-10-28
 
+The command-line entry point in `model/gene_selection.py` was also executed
+on the same completed Heart fold. Its gene TXT/CSV, selected mask and feature
+metrics CSV were byte-for-byte identical to the notebook exports. The README
+now uses this command for direct results; Jupyter is optional. Command-line
+plots use a noninteractive backend and do not require a display server.
+
 The author-supplied `data/header.txt` contains 22,919 distinct nonempty gene
 identifiers. It was copied without changes; its SHA-256 is recorded in
 `data/README.md`. Its length matches Heart expression columns and saved masks;
