@@ -375,40 +375,13 @@ python -s -m pip check
 python -s model/gene_selection.py --data-dir prepared_data/Heart --run-dir outputs/Heart --fold 0
 ```
 
-The command reads `data/header.txt` and the chosen fold's saved masks, evaluates
-the candidate counts, selects the elbow and writes the final genes automatically.
-Change `--fold 0` to your chosen completed fold, such as `--fold 2`. Selection
-uses one fold, not consensus across folds. The actual fold is recorded in the
-output summary. Use `--header` for a different ordered gene list and
-`--age-mapping ages.json` for other datasets' class-to-month mappings.
+Change `--fold 0` to your chosen completed fold. The final gene list is saved to
+`outputs/Heart/fold_0/gene_selection/final_aging_genes.txt`; plots and run records
+are saved alongside it. Use a new `--output-dir` when repeating selection.
 
-The default `--selection-split initial_test` preserves the previous notebook:
-fit age regression on `initial_split/train.h5` and choose the elbow using
-`initial_split/test.h5`. **This uses test data for gene selection; its metrics
-are not independent final-test performance.** Alternatively, set
-`--selection-split validation` to fit and select on the chosen fold's
-`train.h5` and `valid.h5`, leaving the final holdout unused by this selection step.
-The two settings can produce different gene lists.
-
-`--max-features 1011` retains the previous candidate-count cutoff; use `--max-features all`
-to evaluate all saved counts. At least six candidate masks and a non-flat MAE
-curve are required. Regression uses stored expression values and the mouse
-age mapping documented above. The segmented-elbow calculation now correctly
-minimizes the **sum of squared residuals**; the previous code squared the sum
-of residuals. Corrected gene lists may differ from historical exports.
-
-Results are written to `outputs/Heart/fold_0/gene_selection/` by default:
-
-- `final_aging_genes.txt`: one selected gene per line, preserving header case.
-- `final_aging_genes.csv`: gene names and zero-based feature indices.
-- `selected_feature_mask.txt`: binary mask in the original feature order.
-- `feature_metrics.csv` and `elbow_metrics.png` / `.pdf`: metrics and elbow plots.
-- `selection_summary.json`: selected fold, data split, cutoff, checkpoint,
-  input checksums and training command.
-
-Use `--output-dir` to choose a new destination for each repeat. This step has a separate runtime from
-the Quick run and depends on the number and size of saved masks. The supplied
-header is positional; preserve its correspondence with the expression columns.
+The default uses test data for selection, so its metrics are not independent
+final-test estimates. See [selection settings and output details](docs/reproducibility.md#final-gene-selection)
+for alternatives and methodological notes.
 
 ### Optional: interactive notebook
 
