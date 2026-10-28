@@ -103,6 +103,11 @@ def collect_masks(checkpoint_dir, gene_count, max_features):
 
 def regression_metrics(x_train, y_train, x_eval, y_eval):
     # Bound BLAS threads to avoid oversubscription across many small regressions.
+    # Match the original pandas column-selection layout: boolean NumPy indexing
+    # produces Fortran-ordered arrays whose least-squares rank can differ for
+    # ill-conditioned inputs, changing the result dramatically.
+    x_train = np.ascontiguousarray(x_train)
+    x_eval = np.ascontiguousarray(x_eval)
     with threadpool_limits(limits=1, user_api='blas'):
         regression = LinearRegression().fit(x_train, y_train)
         predicted = regression.predict(x_eval)
@@ -112,7 +117,7 @@ def regression_metrics(x_train, y_train, x_eval, y_eval):
 
 
 def segmented_knee(rows):
-    """Original MAD-filtered, pre-minimum search, with corrected residual squares.
+    """Original MAD-filtered, pre-minimum search using squared residuals.
 
     Each side contains at least three points; the breakpoint is shared. Flat
     curves and insufficient evidence fail explicitly instead of picking a gene

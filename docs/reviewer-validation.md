@@ -31,11 +31,32 @@ breakpoint. `pip check` and notebook-format validation passed. Installed
 selection packages included NumPy 1.26.4, SciPy 1.12.0, scikit-learn 1.5.1,
 h5py 3.11.0, Matplotlib 3.11.2, pandas 2.3.3 and ipykernel 6.31.0.
 
-The segmented fit now sums squared residuals instead of squaring their sum.
-This correction can change historical gene lists. The default selection mode
-retains the previous initial-test usage and explicitly labels it as selection
-data; the optional validation mode leaves that holdout unused by the notebook.
-No manuscript numerical-equivalence claim is made.
+Correction: an earlier version of this record incorrectly stated that the
+original notebook squared the sum of residuals. Inspection of the original
+notebook confirms that it already sums squared residuals. The current version
+uses the same objective. The default selection mode retains the previous
+initial-test usage and explicitly labels it as selection data; the optional
+validation mode leaves that holdout unused by the notebook. No manuscript
+numerical-equivalence claim is made.
+
+The author-supplied original notebook was compared against the updated code
+on the same local Heart fold 0 masks, initial train/test data and header. The
+original notebook's mapping, mask parsing, regression and elbow functions
+were extracted for this check; it was not a full original-notebook execution.
+Both calculations used one BLAS thread. Initially only 51 of 104 MAEs agreed
+within `rtol=1e-5, atol=1e-5`; one candidate differed by about 1,922 months.
+For a 260-feature candidate, the original pandas selection produced a C-order
+matrix while NumPy boolean selection produced a Fortran-order matrix. Although
+the values were identical, the ill-conditioned fit reported ranks 253 and 254
+and substantially different metrics. The current code now converts selected
+matrices to C-order, matching the original layout.
+
+After that change, all 104 MAEs, RMSEs and PCCs matched exactly in this
+environment, and both implementations selected the same 12-feature mask and
+gene identifiers (ignoring the original notebook's uppercasing). A unit test
+checks C- and Fortran-order inputs. This comparison does not establish
+equivalence for other folds, machines, environments or manuscript results;
+ill-conditioned regression remains sensitive to numerical conditions.
 
 ## Windows checkpoint fix on 2026-10-27
 

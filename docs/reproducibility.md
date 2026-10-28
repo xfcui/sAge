@@ -55,9 +55,15 @@ and executed on an existing completed Heart fold on 2026-10-28; see the
 [execution record](reviewer-validation.md#readme-to-gene-selection-check-on-2026-10-28).
 It uses the included ordered `data/header.txt`. The default initial-test
 selection and optional CV-validation selection are distinct analysis choices;
-both are recorded in the output manifest. The corrected segmented residual
-objective can change historical gene lists. These post-training checks do not
-establish manuscript result equivalence.
+both are recorded in the output manifest. The original and current segmented
+search both minimize the sum of squared residuals; the earlier claim that the
+original squared the sum of residuals was incorrect. These post-training
+checks do not establish manuscript result equivalence.
+An original-function comparison on 104 local Heart fold 0 masks exposed
+substantial numerical differences for some candidate regressions due to array
+layout. After matching the original layout, all metrics and the 12 selected
+features matched in that environment. See the execution record for limitations;
+manuscript results and stability across environments remain to be verified.
 
 - The initial holdout split uses seed 20201212. It reserves the first shuffled
   sample of each class for training and the second for testing, then fills
@@ -95,9 +101,9 @@ The two settings can produce different gene lists.
 `--max-features 1011` retains the previous candidate-count cutoff; use `--max-features all`
 to evaluate all saved counts. At least six candidate masks and a non-flat MAE
 curve are required. Regression uses stored expression values and the mouse
-age mapping documented above. The segmented-elbow calculation now correctly
-minimizes the **sum of squared residuals**; the previous code squared the sum
-of residuals. Corrected gene lists may differ from historical exports.
+age mapping documented above. Both the original and current segmented-elbow
+calculations minimize the **sum of squared residuals**. The current code adds
+explicit checks for insufficient points and flat curves.
 
 Results are written to `outputs/Heart/fold_0/gene_selection/` by default:
 

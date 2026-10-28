@@ -9,7 +9,8 @@ import h5py
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'model'))
-from gene_selection import collect_masks, load_data, load_genes, read_mask, segmented_knee
+from gene_selection import (collect_masks, load_data, load_genes, read_mask,
+                            regression_metrics, segmented_knee)
 
 
 class GeneSelectionTests(unittest.TestCase):
@@ -91,6 +92,18 @@ class GeneSelectionTests(unittest.TestCase):
             load_data(path, 4, {1: 3, 4: 24})
         with self.assertRaisesRegex(ValueError, 'missing class'):
             load_data(path, 3, {1: 3})
+
+    def test_regression_matches_for_c_and_fortran_input_layouts(self):
+        rng = np.random.default_rng(33)
+        x = rng.normal(size=(90, 8)).astype(np.float32)
+        x[:, 7] = x[:, 0] + 1e-5 * x[:, 1]
+        ages = np.where(x[:, 0] > 0, 24.0, 3.0)
+        c_metrics = regression_metrics(np.ascontiguousarray(x[:60]), ages[:60],
+                                       np.ascontiguousarray(x[60:]), ages[60:])
+        f_metrics = regression_metrics(np.asfortranarray(x[:60]), ages[:60],
+                                       np.asfortranarray(x[60:]), ages[60:])
+        for name in ('PCC', 'MAE', 'RMSE'):
+            self.assertAlmostEqual(c_metrics[name], f_metrics[name], places=7)
 
 
 if __name__ == '__main__':
