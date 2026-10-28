@@ -4,8 +4,11 @@ The original repository's [dataset notes](readme.txt) document the source
 encoding: age IDs 0–5 denote 1, 3, 18, 21, 24 and 30 months; method IDs
 0/1 denote droplet/FACS; tissue ID 6 denotes Heart. Under that encoding,
 the example's age IDs 1/4 mean 3/24 months and method ID 1 means FACS.
-These notes supply the historical interpretation; the exact provenance and
-feature-order correspondence of the released file still need documentation.
+These notes supply the historical interpretation; the released file's source
+and biological feature-order correspondence still need provenance documentation.
+The supplied `header.txt` now provides 22,919 gene
+names for positional mapping; the notebook validates its length against the
+expression columns and masks without sorting, uppercasing or deduplicating it.
 The original [conversion script](convert.py) requires `hbchen.hdf5`, which
 is not bundled and is not needed for the Quick run.
 
@@ -27,6 +30,22 @@ Gene names, cell IDs, donor IDs, tissue labels, and a public data accession
 are not stored in this HDF5. The author must document the source, feature
 order, class/covariate meanings, and redistribution rights before final
 manuscript release.
+
+## Ordered gene header
+
+[`header.txt`](header.txt) is the author-supplied ordered gene list, with one
+identifier per line. Line 1 maps to expression column 0 and mask position 0.
+The file is distributed unchanged with SHA-256:
+
+```text
+3a27526c02abef4b53f764f6be3cbce535a51c199339a4dffba8b3f7ead7c2e8
+```
+
+Its 22,919 lines match the Heart expression width. Matching lengths do not
+independently establish biological gene-column identity. See the main
+[gene-selection instructions](../README.md#6-select-final-aging-genes) to use
+the header with a completed fold's checkpoints. Other datasets need their own
+header if their feature order differs.
 
 ## Download and verify
 

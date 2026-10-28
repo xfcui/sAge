@@ -28,9 +28,16 @@ Some listed paths are generated intermediates rather than primary datasets. Foll
 
 ### `model/elbow-gene-choose.ipynb`
 
-- `1-TMS-remove/2-restart`
-- `2-8.3-shanda/1-feature/1-5x`
-- `header.txt`
+This notebook now uses the core README workflow, independently of the figure
+input root:
+
+- `data/header.txt` (included)
+- `prepared_data/Heart/initial_split/{train,test}.h5` (default selection mode)
+- `prepared_data/Heart/cv_folds/fold_N/{train,valid}.h5` (validation selection mode)
+- `outputs/Heart/fold_N/checkpoints/feature*/feature.txt` and completed `train.log`
+
+Paths and the chosen fold are configurable in the notebook. See the root
+[gene-selection guide](../README.md#6-select-final-aging-genes).
 
 ### `figure/figure2/figure-2-1-mouse-benchmark-MLP.ipynb`
 

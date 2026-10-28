@@ -50,6 +50,15 @@ The optional figure requirements are not a validated version lock.
 
 ## Experimental behavior
 
+The gene-selection notebook was subsequently connected to the README outputs
+and executed on an existing completed Heart fold on 2026-10-28; see the
+[execution record](reviewer-validation.md#readme-to-gene-selection-check-on-2026-10-28).
+It uses the included ordered `data/header.txt`. The default initial-test
+selection and optional CV-validation selection are distinct analysis choices;
+both are recorded in the output manifest. The corrected segmented residual
+objective can change historical gene lists. These post-training checks do not
+establish manuscript result equivalence.
+
 - The initial holdout split uses seed 20201212. It reserves the first shuffled
   sample of each class for training and the second for testing, then fills
   the requested test size. It is not a proportional stratified holdout; its

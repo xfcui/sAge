@@ -3,7 +3,7 @@
 **Quick navigation:** [Quick run](#quick-run) ·
 [Installation](#2-install-the-environment) ·
 [Heart example](data/README.md) · [Training](#4-train-the-model) ·
-[Figure workflow](figure/WORKFLOW.md) ·
+[Gene selection](#6-select-final-aging-genes) · [Figure workflow](figure/WORKFLOW.md) ·
 [Validation record](docs/reviewer-validation.md)
 
 **sAge** is a JAX/Flax model for classification and iterative feature selection
@@ -211,8 +211,11 @@ The current Heart file contains only class IDs 1 and 4 (3 and 24 months),
 although the model has six output classes. Its first covariate is method ID 1
 (FACS); its unused second covariate is tissue ID 6 (Heart). These mappings come
 from the original [dataset notes](data/readme.txt). The released HDF5 does not
-embed gene identifiers or provenance metadata; the Quick run uses matrix
-positions, and compatible user inputs must preserve the same feature order.
+embed gene identifiers or provenance metadata. The supplied
+[`data/header.txt`](data/header.txt) has 22,919 ordered gene names for positional
+mapping in the gene-selection step. Compatible user inputs must preserve that
+feature order or supply their own matching header. A length check cannot by
+itself verify biological gene-column identity.
 
 Create a holdout test set and five cross-validation folds:
 
@@ -348,7 +351,66 @@ outputs/Heart/fold_0/
 The remaining folds have the same structure. Prepared splits and generated
 outputs are excluded from Git; the complete Heart example file is included.
 
-## 6. Figure analysis
+## 6. Select final aging genes
+
+After **full pruning of one chosen fold**, open
+[`model/elbow-gene-choose.ipynb`](model/elbow-gene-choose.ipynb). You do not have
+to finish all five folds to select genes from one fold. For example, train
+fold 0 to early stopping in a fresh output directory:
+
+```bash
+python -s run_cross_validation.py --data-dir prepared_data/Heart --output-dir outputs/Heart --folds 0 -- --seed 20201212 --max_epochs 9999
+```
+
+If you already completed that fold using the full-training command above,
+reuse its outputs; do not rerun into the same directory. The one-epoch Quick
+run and eight-epoch pruning check are insufficient for final gene selection.
+
+In the same activated environment, install the notebook dependencies and open
+JupyterLab from the repository root:
+
+```bash
+python -s -m pip install -r requirements-gene-selection.txt
+python -s -m pip check
+python -s -m ipykernel install --sys-prefix --name sage --display-name "Python (sAge)" --env PYTHONNOUSERSITE 1
+python -s -m jupyterlab model/elbow-gene-choose.ipynb
+```
+
+Choose the **Python (sAge)** kernel, review the configuration cell, and run all
+cells. Defaults are `DATA_DIR = prepared_data/Heart`, `RUN_DIR = outputs/Heart`,
+`FOLD = fold_0`, and `HEADER_FILE = data/header.txt`, resolved from the repository
+root. Change `FOLD` to your chosen completed fold and record which fold was used
+for the reported results. Selection uses one fold, not consensus across folds.
+
+The default `SELECTION_SPLIT = "initial_test"` preserves the previous notebook:
+fit age regression on `initial_split/train.h5` and choose the elbow using
+`initial_split/test.h5`. **This uses test data for gene selection; its metrics
+are not independent final-test performance.** Alternatively, set
+`SELECTION_SPLIT = "validation"` to fit and select on the chosen fold's
+`train.h5` and `valid.h5`, leaving the final holdout unused by this notebook.
+The two settings can produce different gene lists.
+
+`MAX_FEATURES = 1011` retains the previous candidate-count cutoff; set `None`
+to evaluate all saved counts. At least six candidate masks and a non-flat MAE
+curve are required. Regression uses stored expression values and the mouse
+age mapping documented above. The segmented-elbow calculation now correctly
+minimizes the **sum of squared residuals**; the previous code squared the sum
+of residuals. Corrected gene lists may differ from historical exports.
+
+Results are written to `outputs/Heart/fold_0/gene_selection/` by default:
+
+- `final_aging_genes.txt`: one selected gene per line, preserving header case.
+- `final_aging_genes.csv`: gene names and zero-based feature indices.
+- `selected_feature_mask.txt`: binary mask in the original feature order.
+- `feature_metrics.csv` and `elbow_metrics.png` / `.pdf`: metrics and elbow plots.
+- `selection_summary.json`: selected fold, data split, cutoff, checkpoint,
+  input checksums and training command.
+
+Use a new `OUTPUT_DIR` for each repeat. This step has a separate runtime from
+the Quick run and depends on the number and size of saved masks. The supplied
+header is positional; preserve its correspondence with the expression columns.
+
+## 7. Figure analysis
 
 The `figure/` directory contains optional manuscript analysis notebooks and R
 scripts. They are outside the core software demo and require additional
@@ -367,6 +429,9 @@ figure dependencies.
 | `model/prepare_dataset_for_cv.py` | Prepare holdout and CV files |
 | `model/train-tissue.py` | Train and evaluate one fold |
 | `model/elbow-gene-choose.ipynb` | Select the final feature count and aging-gene list using one chosen cross-validation fold |
+| `model/gene_selection.py` | Validated mask loading, regression and segmented-elbow calculation used by the notebook |
+| `data/header.txt` | Ordered gene names used to map feature masks to gene lists |
+| `requirements-gene-selection.txt` | Optional dependencies for the gene-selection notebook |
 | `run_cross_validation.py` | Run multiple folds and save logs |
 | `check_environment.py` | Check imports, devices, model execution, and early-stopping compatibility |
 | `environment.yml`, `requirements.txt` | Installation environment |

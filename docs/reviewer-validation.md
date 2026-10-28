@@ -1,5 +1,36 @@
 # Execution validation record
 
+## README-to-gene-selection check on 2026-10-28
+
+The author-supplied `data/header.txt` contains 22,919 distinct nonempty gene
+identifiers. It was copied without changes; its SHA-256 is recorded in
+`data/README.md`. Its length matches Heart expression columns and saved masks;
+this check alone does not establish the biological identity of each column.
+
+The updated `model/elbow-gene-choose.ipynb` executed from top to bottom in the
+Python 3.12.16 `sage` environment, using an existing completed local Heart
+fold 0 run and the README directory layout. There were 104 saved candidate
+masks with 4 through 1,011 genes. The default initial train/test selection
+mode used 2,484/620 cells and exported 12 genes. A separate validation-mode
+execution used 1,987/497 cells and exported 42 genes. These counts describe
+this execution check, not validated manuscript gene lists or independent
+test-set accuracy. The completed training run was reused, not retrained here.
+
+The executed notebook retained its plot and table outputs. Gene-list indices,
+header names and mask positions were reconciled. The PNG plot was visually
+inspected, including the full candidate range and a separate elbow-search view.
+Twelve unit tests passed, covering checkpoint compatibility, invalid masks,
+header ordering, insufficient/flat curves, age mapping and a known segmented
+breakpoint. `pip check` and notebook-format validation passed. Installed
+selection packages included NumPy 1.26.4, SciPy 1.12.0, scikit-learn 1.5.1,
+h5py 3.11.0, Matplotlib 3.11.2, pandas 2.3.3 and ipykernel 6.31.0.
+
+The segmented fit now sums squared residuals instead of squaring their sum.
+This correction can change historical gene lists. The default selection mode
+retains the previous initial-test usage and explicitly labels it as selection
+data; the optional validation mode leaves that holdout unused by the notebook.
+No manuscript numerical-equivalence claim is made.
+
 ## Windows checkpoint fix on 2026-10-27
 
 The local `xfcui/sAge` checkout at `9b378ad` failed in fold 0 after epoch 10.
