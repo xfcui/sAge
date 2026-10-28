@@ -3,8 +3,7 @@
 **Quick navigation:** [Quick run](#quick-run) ·
 [Installation](#2-install-the-environment) ·
 [Heart example](data/README.md) · [Training](#4-train-the-model) ·
-[Gene selection](#6-select-final-aging-genes) · [Figure workflow](figure/WORKFLOW.md) ·
-[Validation record](docs/reviewer-validation.md)
+[Gene selection](#6-select-final-aging-genes) · [Figure workflow](figure/WORKFLOW.md)
 
 **sAge** is a JAX/Flax model for classification and iterative feature selection
 from single-cell expression data. This repository provides data splitting,
@@ -158,8 +157,8 @@ software demo; their separate setup is documented in
 PyTorch supplies the data loader; JAX performs model computation. A fresh
 public-clone validation covered the Git LFS Heart download, independent Conda
 and virtual-environment installation, five-fold data preparation, one-fold
-training/evaluation, pruning and checkpoint restoration. See the
-[execution validation record](docs/reviewer-validation.md) for the exact scope.
+training/evaluation, pruning and checkpoint restoration. Full five-fold,
+Linux/GPU execution and equivalence to manuscript results were not verified.
 
 ### Optional: NVIDIA GPU on Linux
 
@@ -380,8 +379,9 @@ Change `--fold 0` to your chosen completed fold. The final gene list is saved to
 are saved alongside it. Use a new `--output-dir` when repeating selection.
 
 The default uses test data for selection, so its metrics are not independent
-final-test estimates. See [selection settings and output details](docs/reproducibility.md#final-gene-selection)
-for alternatives and methodological notes.
+final-test estimates. Use `--selection-split validation` to select on the chosen
+fold's validation set instead; this may change the selected genes. Run
+`python -s model/gene_selection.py --help` for available options.
 
 ### Optional: interactive notebook
 
@@ -425,14 +425,16 @@ figure dependencies.
 | `check_environment.py` | Check imports, devices, model execution, and early-stopping compatibility |
 | `environment.yml`, `requirements.txt` | Installation environment |
 | `docs/environment.original.yml` | Historical environment export |
-| `docs/reproducibility.md` | Validation scope and experimental caveats |
-| `docs/reviewer-validation.md` | Fresh-clone execution validation record |
 
 ## Reproducibility and citation
 
-See [reproducibility notes](docs/reproducibility.md) for validation status,
-data-splitting behavior, random seeds, checkpoint selection and metric
-aggregation. The software is distributed under the [MIT license](LICENSE).
+The shuffled PyTorch data loader is not explicitly seeded; repeated runs can
+differ. Metrics average batch means without weighting by batch size, and final
+testing uses the last training state rather than restoring the best checkpoint.
+Cell-level splits do not enforce donor separation. The current installation
+environment differs from the historical manuscript environment, and numerical
+equivalence has not been established. The software is distributed under the
+[MIT license](LICENSE).
 
 The available optional MLP benchmark notebooks are in
 [Figure 2](figure/figure2/), with required inputs listed in

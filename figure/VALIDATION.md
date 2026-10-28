@@ -2,9 +2,7 @@
 
 The model gene-selection notebook was revised and executed end-to-end on
 2026-10-28 using the README Heart splits, a completed fold and the included
-gene header. See the [model execution record](../docs/reviewer-validation.md#readme-to-gene-selection-check-on-2026-10-28)
-for its separate validation scope. The historical figure checks below remain
-unchanged.
+gene header. The historical figure checks below remain unchanged.
 
 ## Notebook launch and renamed files
 
